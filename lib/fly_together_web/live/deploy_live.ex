@@ -5,7 +5,7 @@ defmodule FlyTogetherWeb.DeployLive do
   alias Fly.Client
 
   @impl true
-  def mount(_params, session, socket) do
+  def mount(_params, _session, socket) do
     socket =
       assign(socket,
         app_id: nil,
@@ -22,36 +22,11 @@ defmodule FlyTogetherWeb.DeployLive do
         authenticated: true
       )
 
-    # Only make the API call if the websocket is setup. Not on initial render.
-    # if connected?(socket) do
-    #   {:ok, fetch_app(socket)}
-    # else
-    #   {:ok, socket}
-    # end
     {:ok, socket, temporary_assigns: [logs: []]}
   end
 
   defp client_config(socket) do
     Fly.Client.config(access_token: socket.assigns.token)
-  end
-
-  defp fetch_app(socket) do
-    app_name = socket.assigns.app_name
-
-    Process.send_after(self(), "refetch_app", 3_000)
-
-    case Client.fetch_app(app_name, socket.assigns.config) do
-      {:ok, app} ->
-        assign(socket, :app, app)
-
-      {:error, :unauthorized} ->
-        put_flash(socket, :error, "Not authenticated")
-
-      {:error, reason} ->
-        Logger.error("Failed to load app '#{inspect(app_name)}'. Reason: #{inspect(reason)}")
-
-        put_flash(socket, :error, reason)
-    end
   end
 
   @impl true
@@ -76,11 +51,6 @@ defmodule FlyTogetherWeb.DeployLive do
 
   def handle_event("click", _params, socket) do
     {:noreply, assign(socket, count: socket.assigns.count + 1)}
-  end
-
-  @impl true
-  def handle_info("refetch_app", socket) do
-    {:noreply, fetch_app(socket)}
   end
 
   @impl true
