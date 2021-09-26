@@ -8,8 +8,8 @@ defmodule FlyTogether.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      # Start the Ecto repository
-      FlyTogether.Repo,
+      # We wont need ecto at least for now
+      # FlyTogether.Repo,
       # Start the Telemetry supervisor
       FlyTogetherWeb.Telemetry,
       # Start the PubSub system
