@@ -16,7 +16,7 @@ defmodule Fly.ClientLive do
   end
 
   @impl true
-  def perform_http_get(url, _opts) do
-    HTTPoison.get(url)
+  def perform_http_get(url, opts) do
+    HTTPoison.get(url, opts)
   end
 end

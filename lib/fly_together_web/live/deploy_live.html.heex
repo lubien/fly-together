@@ -1,9 +1,14 @@
 <div class="w-full max-w-xs">
   <%= if @app_id do %>
     <h4>App Name: <%= @app_id %></h4>
+
+    <%= if @password do %>
+      <h4>App Password: <code><%= @password %></code></h4>
+    <% end %>
+
     <%= if @release_id do %>
       <p>
-        <a href={app_link(@app_id, @password)} target="_blank" class="mb-2"><%= app_link(@app_id, @password) %></a>
+        <a href={app_link(@app_id)} target="_blank" class="mb-2"><%= app_link(@app_id) %></a>
       </p>
     <% end %>
   <% end %>
@@ -24,5 +29,13 @@
 
       <%= submit "Deploy" %>
     </.form>
+  <% end %>
+
+  <%= if @app_id do %>
+    <blockquote class="log-viewer" phx-update="append">
+      <%= for log <- @logs do %>
+        <div id={log["id"]} class={"log-#{log["attributes"]["level"]}"}><%= log["attributes"]["message"] %></div>
+      <% end %>
+    </blockquote>
   <% end %>
 </div>

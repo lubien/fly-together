@@ -87,3 +87,17 @@
   text-decoration: none;
   cursor: pointer;
 }
+
+.log-viewer {
+  max-height: 500px;
+  background: #34495e;
+  overflow-y: auto;
+}
+
+.log-info {
+  color: #ecf0f1
+}
+
+.log-error {
+  color: #e74c3c
+}

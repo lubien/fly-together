@@ -13,6 +13,8 @@ defmodule FlyTogetherWeb.DeployLive do
         token: nil,
         password: nil,
         release_id: nil,
+        next_token: 0,
+        logs: [],
 
         state: :loading,
         app: nil,
@@ -26,7 +28,7 @@ defmodule FlyTogetherWeb.DeployLive do
     # else
     #   {:ok, socket}
     # end
-    {:ok, socket}
+    {:ok, socket, temporary_assigns: [logs: []]}
   end
 
   defp client_config(socket) do
@@ -68,6 +70,7 @@ defmodule FlyTogetherWeb.DeployLive do
       |> create_app(organization_id)
       |> set_app_password()
       |> deploy_image()
+      |> schedule_get_logs()
     }
   end
 
@@ -78,6 +81,11 @@ defmodule FlyTogetherWeb.DeployLive do
   @impl true
   def handle_info("refetch_app", socket) do
     {:noreply, fetch_app(socket)}
+  end
+
+  @impl true
+  def handle_info("fetch_logs", socket) do
+    {:noreply, fetch_logs(socket)}
   end
 
   defp fetch_organizations(socket) do
@@ -220,13 +228,51 @@ defmodule FlyTogetherWeb.DeployLive do
     end
   end
 
+  defp fetch_logs(%{assigns: %{app_id: nil}} = socket) do
+    socket
+  end
+
+  defp fetch_logs(%{assigns: %{next_token: next_token, app_id: app_id}} = socket) do
+    case Client.get_logs(app_id, next_token, client_config(socket)) do
+      {:ok, logs} ->
+        next_token =
+          case Integer.parse(logs["meta"]["next_token"]) do
+            {next_token, _rest} ->
+              next_token
+
+            _ ->
+              0
+          end
+
+        socket
+        |> assign(:logs, logs["data"])
+        |> assign(:next_token, next_token)
+        |> schedule_get_logs()
+
+      {:error, :unauthorized} ->
+        put_flash(socket, :error, "Not authenticated")
+
+      {:error, reason} ->
+        # Logger.error("Failed to load app '#{inspect(app_name)}'. Reason: #{inspect(reason)}")
+
+        socket
+        |> put_flash(:error, reason)
+        |> schedule_get_logs()
+    end
+  end
+
+  defp schedule_get_logs(socket) do
+    Process.send_after(self(), "fetch_logs", 1_000)
+    socket
+  end
+
   def organizations_to_select(organizations) do
     for org <- organizations do
       [value: org["id"], key: org["name"]]
     end
   end
 
-  def app_link(name, token) do
-    "https://#{name}.fly.dev?token=#{token}"
+  def app_link(name) do
+    "https://#{name}.fly.dev"
   end
 end

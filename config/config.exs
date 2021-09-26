@@ -51,5 +51,6 @@ config :phoenix, :json_library, Jason
 import_config "#{config_env()}.exs"
 
 config :fly_together, :graphql_endpoint, "https://api.fly.io/graphql"
+config :fly_together, :rest_endpoint, "https://api.fly.io/api"
 
 config :fly_together, :client_api, Fly.ClientLive

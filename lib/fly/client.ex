@@ -19,6 +19,7 @@ defmodule Fly.Client do
 
     [
       url: Application.get_env(:fly_together, :graphql_endpoint),
+      rest_url: Application.get_env(:fly_together, :rest_endpoint),
       headers: [
         Authorization: "Bearer #{token}",
         "Fly-GraphQL-Client": "playground"
@@ -472,6 +473,20 @@ defmodule Fly.Client do
     Logger.warn("Error issuing HTTP request. Error: #{inspect(reason)}")
     {:error, "Error making API request"}
   end
+
+  def get_logs(app_id, next_token, config) do
+    rest_url = Keyword.fetch!(config, :rest_url)
+    headers = Keyword.fetch!(config, :headers)
+    "#{rest_url}/v1/apps/#{app_id}/logs?next_token=#{next_token}"
+    |> perform_http_get(headers)
+    |> parse_json_response()
+  end
+
+  def parse_json_response({:ok, %{body: body}}) do
+    Jason.decode(body)
+  end
+
+  def parse_json_response(error), do: error
 
   @spec check_http_response(url :: String.t()) :: :ready | :not_ready | {:error, String.t()}
   def check_http_response(url) do
