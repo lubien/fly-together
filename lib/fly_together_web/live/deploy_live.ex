@@ -245,4 +245,8 @@ defmodule FlyTogetherWeb.DeployLive do
   def app_link(name) do
     "https://#{name}.fly.dev"
   end
+
+  def dashboard_link(name) do
+    "https://fly.io/apps/#{name}"
+  end
 end

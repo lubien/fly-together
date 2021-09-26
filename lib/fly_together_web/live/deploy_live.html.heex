@@ -1,4 +1,28 @@
 <div class="w-full max-w-xs">
+  <p>Fly.io has a handy GraphQL API we can use to both create and deploy apps.</p>
+  
+  <p>
+    For this proof of concept we will be deploying a livebook 
+    (using docker hub's <a href="https://hub.docker.com/r/livebook/livebook" target="_blank">livebook/livebook</a> image) app using 
+    only your fly auth token (<a href="https://fly.io/docs/flyctl/auth-token/" target="_blank">How to get a token?</a>). 
+    I do not persist your token in any way, rest assurred.
+  </p>
+
+  <p>
+    This project was first conceived as I wanted to quickly create an online
+    livebook session me and a friend would be able to access together and 
+    eventually kill it when it was not useful anymore to us. <br>
+    
+    For future features we consider:
+
+    <ul>
+      <li>Choosing docker image by name</li>
+      <li>Setting secrects before deploying</li>
+      <li>Setting envyronment variables before deploying</li>
+      <li><a href="https://github.com/lubien/fly-together/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc" target="_blank">Any suggestions?</a></li>
+    </ul>
+  </p>
+
   <%= if @app_id do %>
     <h4>App Name: <%= @app_id %></h4>
 
@@ -10,6 +34,9 @@
       <p>
         <a href={app_link(@app_id)} target="_blank" class="mb-2"><%= app_link(@app_id) %></a>
       </p>
+      <p>
+        <a href={dashboard_link(@app_id)} target="_blank" class="mb-2">Open dashboard</a>
+      </p>
     <% end %>
   <% end %>
 
@@ -18,7 +45,7 @@
     <%= password_input f, :token %>
     <%= error_tag f, :token %>
 
-    <%= submit "Save" %>
+    <%= submit "Authenticate" %>
   </.form>
 
   <%= if Enum.count(@organizations) > 0 do %>
