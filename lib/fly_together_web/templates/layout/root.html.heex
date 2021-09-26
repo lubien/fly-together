@@ -21,14 +21,15 @@
       <section class="container">
         <nav>
           <ul>
-            <li><a href="https://hexdocs.pm/phoenix/overview.html">Get Started</a></li>
+            <li><a href="https://fly.io/docs/flyctl/auth-token/" target="_blank">How to get a token?</a></li>
             <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
               <li><%= link "LiveDashboard", to: Routes.live_dashboard_path(@conn, :home) %></li>
             <% end %>
           </ul>
         </nav>
-        <a href="https://phoenixframework.org/" class="phx-logo">
-          <img src={Routes.static_path(@conn, "/images/phoenix.png")} alt="Phoenix Framework Logo"/>
+        <h1 class="main-heading">Fly Together</h1>
+        <a href="https://github.com/lubien" class="phx-logo">
+          <img src="https://avatars.githubusercontent.com/u/9121359?v=4" alt="Lubien" style="max-height: 64px"/>
         </a>
       </section>
     </header>
