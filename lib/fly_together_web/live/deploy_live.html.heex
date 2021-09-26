@@ -1,0 +1,28 @@
+<div class="w-full max-w-xs">
+  <%= if @app_id do %>
+    <h4>App Name: <%= @app_id %></h4>
+    <%= if @release_id do %>
+      <p>
+        <a href={app_link(@app_id, @password)} target="_blank" class="mb-2"><%= app_link(@app_id, @password) %></a>
+      </p>
+    <% end %>
+  <% end %>
+
+  <.form let={f} for={:auth} phx-submit="setup_auth">
+    <%= label f, :token %>
+    <%= password_input f, :token %>
+    <%= error_tag f, :token %>
+
+    <%= submit "Save" %>
+  </.form>
+
+  <%= if Enum.count(@organizations) > 0 do %>
+    <.form let={f} for={:deploy} phx-submit="deploy">
+      <%= label f, :organization_id %>
+      <%= select f, :organization_id, organizations_to_select(@organizations) %>
+      <%= error_tag f, :organization_id %>
+
+      <%= submit "Deploy" %>
+    </.form>
+  <% end %>
+</div>

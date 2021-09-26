@@ -17,7 +17,7 @@ defmodule FlyTogetherWeb.Router do
   scope "/", FlyTogetherWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
+    live "/", DeployLive, :show
   end
 
   # Other scopes may use custom stacks.
