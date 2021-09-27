@@ -1,5 +1,7 @@
 # FlyTogether
 
+![](https://user-images.githubusercontent.com/9121359/134792257-3e66f78d-550b-4eef-be22-b1257e0d6ce2.gif)
+
 Fly.io has a handy GraphQL API we can use to both create and deploy apps.
 
 For this proof of concept we will be deploying a livebook 
